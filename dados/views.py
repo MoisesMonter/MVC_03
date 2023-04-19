@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 #importar models & Serializers
 from dados.models import Eleicao,Dado_Eleicao
-from dados.serializers import EleicaoSerializer,DadoEleicaoSerializer
+from dados.serializers import EleicaoSerializerGET, EleicaoSerializerPOST,DadoEleicaoSerializer
 
 #importar converção Json
 import json
@@ -47,17 +47,15 @@ def api_home(request, *args,**kwargs):
 def Eleicao_Lista(request):
     if request.method =='GET':
         eleicao = Eleicao.objects.all()
-        serializer = EleicaoSerializer(eleicao,many=True)
+        serializer = EleicaoSerializerGET(eleicao,many=True)
         print(eleicao)
         return Response(serializer.data)        
-
     if request.method == 'POST':
-        gerar_eleicao = EleicaoSerializer(data=request.data)
-        print(gerar_eleicao)
-        if gerar_eleicao.isvalid():
-            ge = gerar_eleicao.save()
-            return Response(gerar_eleicao.data,status=status.HTTP_201_CREATED)       
-        Response(gerar_eleicao.errors)
+        serializer = EleicaoSerializerPOST(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
 @api_view(['GET','POST'])
