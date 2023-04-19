@@ -1,10 +1,14 @@
-from django.urls import path
+from django.urls import path,include
 
 from . import views
+from dados.views import *
 
-# from view import api_home
 
 
 urlpatterns = [
-    path('',views.api_home),
+    path('',api_home),
+    path('Lista_Eleicao/',Eleicao_Lista),
+    path('Dado_Eleicao/',Eleicao_Dado),
 ]
+
+#urlpatterns+=router.urls
