@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 #importar models & Serializers
 from dados.models import Eleicao,Dado_Eleicao
-from dados.serializers import EleicaoSerializerGET, EleicaoSerializerPOST,DadoEleicaoSerializer
+from dados.serializers import EleicaoSerializerGET, EleicaoSerializerPOST,DadoEleicaoSerializerGET,DadoEleicaoSerializerPOST
 
 #importar converção Json
 import json
@@ -62,15 +62,11 @@ def Eleicao_Lista(request):
 def Eleicao_Dado(request):
     if request.method =='GET':
         dados = Dado_Eleicao.objects.all()
-        serializer = DadoEleicaoSerializer(dados,many=True)
+        serializer = DadoEleicaoSerializerGET(dados,many=True)
         return Response(serializer.data)        
     if request.method == 'POST':
-        dado_eleicao =DadoEleicaoSerializer(data=request.data)
-        lista_buscar_pk = Eleicao.objects.get(eleicao_nome= dado_eleicao.eleicao_nome)
-        print(lista_buscar_pk)
-        dado_eleicao.eleicao_n_id = lista_buscar_pk.eleicao_n
-        print(dado_eleicao)
-        if dado_eleicao.isvalid():
-            dado_eleicao.save()
-            return Response(dado_eleicao.data,status=status.HTTP_201_CREATED)       
-        return Response(dado_eleicao.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer =DadoEleicaoSerializerPOST(data=request.data)
+        if serializer.is_valid():
+           serializer.save()
+           return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
