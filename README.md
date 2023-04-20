@@ -79,7 +79,9 @@ Ver os dados Manipulados por API, Usando django Admin
 
 ```bash
   python manage.py createsuperuser
-  (Crie o super usuário)
+  CONTA DE TESTE
+  (id:admin
+   password:A123B456)
 ```
 ```http
 
