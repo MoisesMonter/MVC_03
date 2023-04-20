@@ -20,6 +20,6 @@ from dados import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/',include('dados.urls')),
-    path('',views.Eleicao_Site),
-    path('CriarEleicao/',views.CriarEleicao,name='CriarEleicao'),
+    #path('',views.Eleicao_Site),
+    #path('CriarEleicao/',views.CriarEleicao,name='CriarEleicao'),'''
 ]
