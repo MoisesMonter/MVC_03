@@ -32,3 +32,20 @@ class DadoEleicaoSerializerPOST(serializers.ModelSerializer):
         
         def create(self, validated_data):
             return Dado_Eleicao.objects.create(**validated_data)
+        
+
+class Votar_SerializerGET(serializers.ModelSerializer):
+    class Meta:
+        model = Dado_Eleicao
+        fields =['eleicao_n','candidato_nome']    
+
+        def create(self, validated_data):
+            return Dado_Eleicao.objects.create(**validated_data)
+
+class Votar_SerializerPOST(serializers.ModelSerializer):
+    class Meta:
+        model = Dado_Eleicao
+        fields =['eleicao_n','candidato_nome','candidato_votar']    
+
+        def create(self, validated_data):
+            return Dado_Eleicao.objects.create(**validated_data)

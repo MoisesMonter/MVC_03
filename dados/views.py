@@ -1,10 +1,12 @@
 #from django.shortcuts import render
+from datetime import datetime
 #Usuarios
 from django.contrib.auth.models import User
-
+from django.shortcuts import render
+from dados.forms import FormularioCadastro
 #importar models & Serializers
 from dados.models import Eleicao,Dado_Eleicao
-from dados.serializers import EleicaoSerializerGET, EleicaoSerializerPOST,DadoEleicaoSerializerGET,DadoEleicaoSerializerPOST
+from dados.serializers import EleicaoSerializerGET, EleicaoSerializerPOST,DadoEleicaoSerializerGET,DadoEleicaoSerializerPOST,Votar_SerializerGET,Votar_SerializerPOST
 
 #importar converção Json
 import json
@@ -57,7 +59,6 @@ def Eleicao_Lista(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-
 @api_view(['GET','POST'])
 def Eleicao_Dado(request):
     if request.method =='GET':
@@ -70,3 +71,41 @@ def Eleicao_Dado(request):
            serializer.save()
            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET','POST'])  
+def Votar_Eleicao(request):
+    if request.method == 'GET':
+        dados = Dado_Eleicao.objects.all()
+        serializer = Votar_SerializerGET(dados,many=True)
+        return Response(serializer.data)
+    if request.method == 'POST':
+        serializer =  Votar_SerializerGET(data=request.data)
+        if serializer.is_valid():
+            print(serializer.data['eleicao_n'])
+            validar_data = Eleicao.objects.get(eleicao_n= serializer.data['eleicao_n'])
+            print(validar_data.eleicao_data_fim)
+            data_final =datetime.fromisoformat(str(validar_data.eleicao_data_fim)[:10])
+            if datetime.now() > data_final:
+                print(serializer.data)
+                obj = Dado_Eleicao.objects.get(eleicao_n=serializer.data['eleicao_n'],candidato_nome =serializer.data['candidato_nome'])
+                obj.candidato_voto+=1
+                obj.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+'''def Eleicao_Site(request):
+    if request.method == 'GET':
+         return render(request,'index.html')
+
+
+def CriarEleicao(request):
+    if request.method == 'GET':
+        form = FormularioCadastro()
+        print(form)
+        return render(request,'criar.html',context={"form":form})
+    else:
+        form = FormularioCadastro(request.POST)
+        if form.is_valid():
+            print(form)'''
