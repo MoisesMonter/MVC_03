@@ -58,7 +58,9 @@ def Eleicao_Lista(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+from django.db.models import Max
+
 @api_view(['GET','POST'])
 def Eleicao_Dado(request):
     if request.method =='GET':
@@ -68,8 +70,16 @@ def Eleicao_Dado(request):
     if request.method == 'POST':
         serializer =DadoEleicaoSerializerPOST(data=request.data)
         if serializer.is_valid():
-           serializer.save()
-           return Response(serializer.data, status=status.HTTP_201_CREATED)
+            serializer.save()
+            validar_ativo = Eleicao.objects.get(eleicao_n= serializer.data['eleicao_n'])
+            print(validar_ativo.eleicao_ativo)
+            data2 = Dado_Eleicao.objects.filter(eleicao_n = validar_ativo.eleicao_n)
+            print(len(data2))
+            if len(data2) >1:
+                validar_ativo.eleicao_ativo = True
+                print(validar_ativo.eleicao_ativo)
+                validar_ativo.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET','POST'])  
