@@ -46,8 +46,8 @@ essa parte gerará a eleição particular para ser manipulado
   GET localhost:8000/api/Lista_Eleicao/
   POST 
     {
-      "eleicao_nome": "exemplo321"
-      "eleicao_data_fim": "2023-05-19",
+      "eleicao_nome": "exemplo321",
+      "eleicao_data_fim": "2023-05-19"
     }
 ```
 
@@ -58,7 +58,7 @@ essa parte pegará a eleição criada e gerará um candidato referente ao númer
   POST 
     {
         "eleicao_n": 1,
-        "candidato_nome": "candidatoExemplo321",
+        "candidato_nome": "candidatoExemplo321"
     }
 
 ```
