@@ -96,10 +96,13 @@ def Votar_Eleicao(request):
             print(validar_data.eleicao_data_fim)
             data_final =datetime.fromisoformat(str(validar_data.eleicao_data_fim)[:10])
             if datetime.now() > data_final:
-                print(serializer.data)
-                obj = Dado_Eleicao.objects.get(eleicao_n=serializer.data['eleicao_n'],candidato_nome =serializer.data['candidato_nome'])
-                obj.candidato_voto+=1
-                obj.save()
+                if serializer.data['eleicao_ativo'] == True:
+                    print('is true')
+                    obj = Dado_Eleicao.objects.get(eleicao_n=serializer.data['eleicao_n'],candidato_nome =serializer.data['candidato_nome'])
+                    obj.candidato_voto+=1
+                    obj.save()
+                else:
+                    print("eielição nao está ativo")
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
     
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
